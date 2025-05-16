@@ -173,14 +173,14 @@ namespace WebP
             }
             return lRawData;
         }
-        public static Texture2D CreateWebpTexture2D(int width, int height, bool isUseMipmap, bool isLinear)
+        public static Texture2D CreateWebpTexture2D(int width, int height, bool isUseMipmap, bool isLinear, TextureFormat textureFormat = TextureFormat.RGBA32)
         {
             if (isUseMipmap)
             {
                 UnityEngine.Experimental.Rendering.GraphicsFormat graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormatUtility.GetGraphicsFormat(TextureFormat.RGBA32, false);
                 uint mipmapSize = UnityEngine.Experimental.Rendering.GraphicsFormatUtility.ComputeMipmapSize(width, height, graphicsFormat);
                 int mipmapCount = (int)mipmapSize / (width * height);
-                return new Texture2D(width, height, TextureFormat.RGBA32, mipCount: mipmapCount, isLinear);
+                return new Texture2D(width, height, textureFormat, mipCount: mipmapCount, isLinear);
             }
             else
             {
@@ -194,7 +194,7 @@ namespace WebP
         /// <param name="lData"></param>
         /// <param name="lError"></param>
         /// <returns></returns>
-		public static unsafe Texture2D CreateTexture2DFromWebP(byte[] lData, bool lMipmaps, bool lLinear, out Error lError, ScalingFunction scalingFunction = null, bool makeNoLongerReadable = true)
+		public static unsafe Texture2D CreateTexture2DFromWebP(byte[] lData, bool lMipmaps, bool lLinear, out Error lError, ScalingFunction scalingFunction = null, bool makeNoLongerReadable = true, TextureFormat textureFormat = TextureFormat.RGBA32)
         {
             Texture2D lTexture2D = null;
             int lWidth;
@@ -205,7 +205,7 @@ namespace WebP
 
             if (lError == Error.Success)
             {
-                lTexture2D = CreateWebpTexture2D(lWidth, lHeight, lMipmaps, lLinear);
+                lTexture2D = CreateWebpTexture2D(lWidth, lHeight, lMipmaps, lLinear, textureFormat: textureFormat);
                 lTexture2D.LoadRawTextureData(lRawData);
                 lTexture2D.Apply(lMipmaps, makeNoLongerReadable);
             }
