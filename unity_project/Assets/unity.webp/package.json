@@ -6,7 +6,6 @@
   "description": "webp made easy for Unity3d.",
   "keywords": ["webp","unity.webp"],
   "dependencies": {
-    "org.nuget.system.runtime.compilerservices.unsafe": "6.0.0"
   },
   "license": "MIT",
   "category": "image"

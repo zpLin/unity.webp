@@ -109,7 +109,8 @@ namespace unity.libwebp
         {
             if (webp_data != null)
             {
-                Unsafe.InitBlockUnaligned(webp_data, 0, (uint)sizeof(WebPData));
+                //Unsafe.InitBlockUnaligned(webp_data, 0, (uint)sizeof(WebPData));
+                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear(webp_data, (uint)sizeof(WebPData));
             }
         }
 
@@ -138,7 +139,8 @@ namespace unity.libwebp
                     return 0;
                 }
 
-                Unsafe.CopyBlockUnaligned((void*)(dst->bytes), src->bytes, (uint)src->size);
+                Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy((void*)(dst->bytes), src->bytes, (uint)src->size);
+                //Unsafe.CopyBlockUnaligned((void*)(dst->bytes), src->bytes, (uint)src->size);
                 dst->size = src->size;
             }
 
