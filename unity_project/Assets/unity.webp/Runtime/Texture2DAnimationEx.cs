@@ -64,7 +64,7 @@ namespace WebP
                         Marshal.Copy((IntPtr)iter.fragment.bytes, frameBytes, 0, frameSize);
                         var loadedBytes = Texture2DExt.LoadRGBAFromWebP(frameBytes, ref frameWidth, ref frameHeight, false, out var error, null);
 
-                        if (iter.blend_method == WebPMuxAnimBlend.WEBP_MUX_BLEND)
+                        if (iter.blend_method == WebPMuxAnimBlend.WEBP_MUX_BLEND && iter.has_alpha == 1)
                         {
                             // Blend with previous frame
                             BlendBlockColor32(fullColor32Bytes, width, height, loadedBytes, iter.x_offset, (height - frameHeight) - iter.y_offset, frameWidth, frameHeight);
@@ -300,8 +300,22 @@ namespace WebP
                         byte* src = blockPtr + (row * blockStride + col * bpp);
 
                         byte srcR = src[0], srcG = src[1], srcB = src[2], srcA = src[3];
-                        byte dstR = dst[0], dstG = dst[1], dstB = dst[2], dstA = dst[3];
+                        if (srcA == 0)
+                        {
+                            // If source alpha is 0, skip blending
+                            continue;
+                        }
+                        else if (srcA == 255)
+                        {
+                            // If source alpha is 255, copy directly
+                            dst[0] = srcR;
+                            dst[1] = srcG;
+                            dst[2] = srcB;
+                            dst[3] = srcA; // optional
+                            continue;
+                        }
 
+                        byte dstR = dst[0], dstG = dst[1], dstB = dst[2], dstA = dst[3];
                         int invA = 255 - srcA;
 
                         dst[0] = (byte)((srcR * srcA + dstR * invA) / 255);
